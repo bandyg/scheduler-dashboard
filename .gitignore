@@ -1,6 +1,8 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# dependencies
+# ===================================
+# Dependencies and Package Managers
+# ===================================
 /node_modules
 /.pnp
 .pnp.*
@@ -9,33 +11,147 @@
 !.yarn/plugins
 !.yarn/releases
 !.yarn/versions
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
 
-# testing
-/coverage
-
-# next.js
+# ===================================
+# Next.js Build Output
+# ===================================
 /.next/
 /out/
+/.swc/
 
-# production
+# ===================================
+# Production Build
+# ===================================
 /build
+/dist
 
-# misc
-.DS_Store
-*.pem
+# ===================================
+# Testing
+# ===================================
+/coverage
+/.nyc_output
+/test-results/
+/playwright-report/
+/test-results/
+/coverage/
 
-# debug
+# ===================================
+# Environment Variables
+# ===================================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.*.local
+
+# ===================================
+# Logs and Debug Files
+# ===================================
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
+# ===================================
+# Runtime and Cache
+# ===================================
+.cache/
+.parcel-cache/
+.eslintcache
+.stylelintcache
 
-# vercel
-.vercel
-
-# typescript
+# ===================================
+# TypeScript
+# ===================================
 *.tsbuildinfo
 next-env.d.ts
+*.d.ts.map
+
+# ===================================
+# IDE and Editor Files
+# ===================================
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+*~
+
+# ===================================
+# Operating System Files
+# ===================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+
+# ===================================
+# Security and Certificates
+# ===================================
+*.pem
+*.key
+*.crt
+*.csr
+*.p12
+*.pfx
+
+# ===================================
+# Deployment and Cloud
+# ===================================
+.vercel
+.netlify
+.firebase/
+.serverless/
+
+# ===================================
+# Temporary and Backup Files
+# ===================================
+*.tmp
+*.temp
+*.bak
+*.backup
+*.orig
+*.rej
+*.patch
+
+# ===================================
+# Database Files
+# ===================================
+*.sqlite
+*.sqlite3
+*.db
+
+# ===================================
+# Miscellaneous
+# ===================================
+.turbo
+.storybook-static/
+storybook-static/

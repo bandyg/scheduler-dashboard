@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Client API Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .log { background: #f5f5f5; padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .error { background: #ffebee; color: #c62828; }
+        .success { background: #e8f5e9; color: #2e7d32; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Client API Test</h1>
+    <button onclick="testClientAPI()">测试客户端API调用</button>
+    <div id="logs"></div>
+
+    <script>
+        function log(message, type = 'info') {
+            const logsDiv = document.getElementById('logs');
+            const logDiv = document.createElement('div');
+            logDiv.className = `log ${type}`;
+            logDiv.innerHTML = `<strong>${new Date().toLocaleTimeString()}</strong>: ${message}`;
+            logsDiv.appendChild(logDiv);
+            console.log(message);
+        }
+
+        async function testClientAPI() {
+            const logsDiv = document.getElementById('logs');
+            logsDiv.innerHTML = '';
+            
+            log('开始测试客户端API调用...');
+            
+            try {
+                // 模拟getHealth函数
+                log('=== 测试getHealth函数 ===');
+                
+                const healthResponse = await fetch('/api/proxy/system/health');
+                log(`健康状态API响应状态: ${healthResponse.status}`);
+                
+                const healthData = await healthResponse.json();
+                log(`健康状态原始数据: ${JSON.stringify(healthData, null, 2)}`);
+                
+                // 模拟API函数的处理逻辑
+                const healthResult = healthData?.data?.data || healthData?.data || healthData;
+                log(`健康状态处理后结果: ${JSON.stringify(healthResult, null, 2)}`, 'success');
+                log(`健康状态值: ${healthResult?.status}`, 'success');
+                
+                // 模拟getStats函数
+                log('=== 测试getStats函数 ===');
+                
+                const statsResponse = await fetch('/api/proxy/system/stats');
+                log(`统计API响应状态: ${statsResponse.status}`);
+                
+                const statsData = await statsResponse.json();
+                log(`统计原始数据: ${JSON.stringify(statsData, null, 2)}`);
+                
+                // 模拟API函数的处理逻辑
+                const statsResult = statsData?.data?.data || statsData?.data || statsData;
+                log(`统计处理后结果: ${JSON.stringify(statsResult, null, 2)}`, 'success');
+                log(`总作业数: ${statsResult?.totalJobs}`, 'success');
+                
+                // 模拟getSchedulerStatus函数
+                log('=== 测试getSchedulerStatus函数 ===');
+                
+                const statusResponse = await fetch('/api/proxy/system/status');
+                log(`调度器状态API响应状态: ${statusResponse.status}`);
+                
+                const statusData = await statusResponse.json();
+                log(`调度器状态原始数据: ${JSON.stringify(statusData, null, 2)}`);
+                
+                // 模拟API函数的处理逻辑
+                const statusResult = statusData?.data?.data || statusData?.data || statusData;
+                log(`调度器状态处理后结果: ${JSON.stringify(statusResult, null, 2)}`, 'success');
+                log(`调度器是否运行: ${statusResult?.isRunning}`, 'success');
+                
+                log('=== 所有API测试完成 ===', 'success');
+                
+            } catch (error) {
+                log(`API测试失败: ${error.message}`, 'error');
+                console.error('详细错误:', error);
+            }
+        }
+    </script>
+</body>
+</html>

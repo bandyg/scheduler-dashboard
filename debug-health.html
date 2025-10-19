@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>健康状态调试</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .debug-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        .success { color: green; }
+        .error { color: red; }
+        .warning { color: orange; }
+        pre { background: #f5f5f5; padding: 10px; border-radius: 3px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>健康状态调试工具</h1>
+    
+    <div class="debug-section">
+        <h2>API 直接测试</h2>
+        <button onclick="testHealthAPI()">测试 /api/proxy/system/health</button>
+        <div id="api-result"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>前端页面数据检查</h2>
+        <button onclick="checkFrontendData()">检查前端数据状态</button>
+        <div id="frontend-result"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>实时监控</h2>
+        <button onclick="startMonitoring()">开始监控</button>
+        <button onclick="stopMonitoring()">停止监控</button>
+        <div id="monitoring-result"></div>
+    </div>
+
+    <script>
+        let monitoringInterval = null;
+
+        async function testHealthAPI() {
+            const resultDiv = document.getElementById('api-result');
+            resultDiv.innerHTML = '<p>正在测试...</p>';
+            
+            try {
+                const response = await fetch('/api/proxy/system/health');
+                const data = await response.json();
+                
+                resultDiv.innerHTML = `
+                    <h3 class="success">API 响应成功</h3>
+                    <p><strong>状态码:</strong> ${response.status}</p>
+                    <p><strong>原始数据:</strong></p>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                    <p><strong>处理后的状态:</strong> ${data.data?.data?.status || data.data?.status || data.status || 'unknown'}</p>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <h3 class="error">API 请求失败</h3>
+                    <p>${error.message}</p>
+                `;
+            }
+        }
+
+        function checkFrontendData() {
+            const resultDiv = document.getElementById('frontend-result');
+            
+            // 打开主页面并检查数据
+            const mainWindow = window.open('http://localhost:3000', '_blank');
+            
+            setTimeout(() => {
+                try {
+                    // 尝试访问主页面的数据
+                    const reactQueryCache = mainWindow.__REACT_QUERY_CACHE__;
+                    if (reactQueryCache) {
+                        resultDiv.innerHTML = `
+                            <h3 class="success">找到 React Query 缓存</h3>
+                            <p>请在浏览器开发者工具中查看详细信息</p>
+                        `;
+                    } else {
+                        resultDiv.innerHTML = `
+                            <h3 class="warning">无法访问 React Query 缓存</h3>
+                            <p>请手动在主页面的开发者工具中检查</p>
+                        `;
+                    }
+                } catch (error) {
+                    resultDiv.innerHTML = `
+                        <h3 class="error">检查失败</h3>
+                        <p>${error.message}</p>
+                        <p>请手动在主页面的开发者工具中执行以下代码:</p>
+                        <pre>
+// 检查 React Query 数据
+console.log('Health data:', window.__REACT_QUERY_DEVTOOLS_CACHE__);
+
+// 或者检查全局状态
+console.log('Window object keys:', Object.keys(window).filter(k => k.includes('react') || k.includes('query')));
+                        </pre>
+                    `;
+                }
+            }, 2000);
+        }
+
+        function startMonitoring() {
+            if (monitoringInterval) {
+                clearInterval(monitoringInterval);
+            }
+            
+            const resultDiv = document.getElementById('monitoring-result');
+            resultDiv.innerHTML = '<h3>开始监控...</h3>';
+            
+            monitoringInterval = setInterval(async () => {
+                try {
+                    const response = await fetch('/api/proxy/system/health');
+                    const data = await response.json();
+                    const status = data.data?.data?.status || data.data?.status || data.status || 'unknown';
+                    const timestamp = new Date().toLocaleTimeString();
+                    
+                    const statusClass = status === 'healthy' ? 'success' : 'error';
+                    resultDiv.innerHTML += `
+                        <p class="${statusClass}">[${timestamp}] 状态: ${status}</p>
+                    `;
+                    
+                    // 保持最新的10条记录
+                    const lines = resultDiv.querySelectorAll('p');
+                    if (lines.length > 10) {
+                        lines[0].remove();
+                    }
+                } catch (error) {
+                    const timestamp = new Date().toLocaleTimeString();
+                    resultDiv.innerHTML += `
+                        <p class="error">[${timestamp}] 错误: ${error.message}</p>
+                    `;
+                }
+            }, 2000);
+        }
+
+        function stopMonitoring() {
+            if (monitoringInterval) {
+                clearInterval(monitoringInterval);
+                monitoringInterval = null;
+                document.getElementById('monitoring-result').innerHTML += '<p><strong>监控已停止</strong></p>';
+            }
+        }
+
+        // 页面加载时自动测试一次
+        window.onload = function() {
+            testHealthAPI();
+        };
+    </script>
+</body>
+</html>

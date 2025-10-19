@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Browser API Test</title>
+</head>
+<body>
+    <h1>Browser API Test</h1>
+    <div id="results"></div>
+    
+    <script>
+        async function testAPI() {
+            const results = document.getElementById('results');
+            
+            try {
+                // 测试健康状态API
+                console.log('Testing health API...');
+                const healthResponse = await fetch('/api/proxy/system/health');
+                const healthData = await healthResponse.json();
+                console.log('Health response:', healthData);
+                
+                // 模拟API函数的数据处理逻辑
+                const processedHealthData = healthData.data?.data || healthData.data || healthData;
+                console.log('Processed health data:', processedHealthData);
+                
+                results.innerHTML += `<h2>Health API Response:</h2><pre>${JSON.stringify(healthData, null, 2)}</pre>`;
+                results.innerHTML += `<h2>Processed Health Data:</h2><pre>${JSON.stringify(processedHealthData, null, 2)}</pre>`;
+                
+                // 测试统计API
+                console.log('Testing stats API...');
+                const statsResponse = await fetch('/api/proxy/system/stats');
+                const statsData = await statsResponse.json();
+                console.log('Stats response:', statsData);
+                
+                // 模拟API函数的数据处理逻辑
+                const processedStatsData = statsData.data?.data || statsData.data || statsData;
+                console.log('Processed stats data:', processedStatsData);
+                
+                results.innerHTML += `<h2>Stats API Response:</h2><pre>${JSON.stringify(statsData, null, 2)}</pre>`;
+                results.innerHTML += `<h2>Processed Stats Data:</h2><pre>${JSON.stringify(processedStatsData, null, 2)}</pre>`;
+                
+            } catch (error) {
+                console.error('Error:', error);
+                results.innerHTML += `<h2>Error:</h2><pre>${error.message}</pre>`;
+            }
+        }
+        
+        // 页面加载后自动测试
+        window.onload = testAPI;
+    </script>
+</body>
+</html>

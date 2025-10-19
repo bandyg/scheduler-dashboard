@@ -1,0 +1,712 @@
+{
+  "info": {
+    "name": "调度服务 API 完整集合",
+    "description": "调度服务的完整API测试集合，包含所有端点的请求配置",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3002",
+      "type": "string"
+    },
+    {
+      "key": "apiPrefix",
+      "value": "/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "jobId",
+      "value": "sample-job-id",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "系统管理",
+      "item": [
+        {
+          "name": "健康检查",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/system/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "system", "health"]
+            },
+            "description": "检查服务运行状态和健康信息"
+          },
+          "response": []
+        },
+        {
+          "name": "获取系统统计",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/system/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "system", "stats"]
+            },
+            "description": "获取系统运行统计信息"
+          },
+          "response": []
+        },
+        {
+          "name": "获取调度器状态",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/system/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "system", "status"]
+            },
+            "description": "获取调度器当前状态"
+          },
+          "response": []
+        },
+        {
+          "name": "启动调度器",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/system/start",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "system", "start"]
+            },
+            "description": "启动调度器服务"
+          },
+          "response": []
+        },
+        {
+          "name": "停止调度器",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"graceful\": true,\n  \"timeout\": 30000\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/system/stop",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "system", "stop"]
+            },
+            "description": "停止调度器服务"
+          },
+          "response": []
+        },
+        {
+          "name": "重启调度器",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"graceful\": true,\n  \"timeout\": 30000\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/system/restart",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "system", "restart"]
+            },
+            "description": "重启调度器服务"
+          },
+          "response": []
+        },
+        {
+          "name": "清理执行历史",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"olderThan\": \"2024-01-01T00:00:00Z\",\n  \"status\": [\"completed\", \"failed\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/system/cleanup",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "system", "cleanup"]
+            },
+            "description": "清理旧的执行历史记录"
+          },
+          "response": []
+        },
+        {
+          "name": "导出配置",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/system/export",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "system", "export"]
+            },
+            "description": "导出系统配置和作业定义"
+          },
+          "response": []
+        },
+        {
+          "name": "导入配置",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jobs\": [],\n  \"config\": {},\n  \"overwrite\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/system/import",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "system", "import"]
+            },
+            "description": "导入系统配置和作业定义"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "作业管理",
+      "item": [
+        {
+          "name": "获取作业列表",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/jobs?page=1&limit=20&status=active&enabled=true",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "jobs"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "页码"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "每页数量"
+                },
+                {
+                  "key": "status",
+                  "value": "active",
+                  "description": "作业状态过滤",
+                  "disabled": true
+                },
+                {
+                  "key": "enabled",
+                  "value": "true",
+                  "description": "是否启用过滤",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "获取作业列表，支持分页和过滤"
+          },
+          "response": []
+        },
+        {
+          "name": "获取单个作业",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/jobs/{{jobId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "jobs", "{{jobId}}"]
+            },
+            "description": "根据ID获取单个作业详情"
+          },
+          "response": []
+        },
+        {
+          "name": "创建HTTP请求作业",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"API健康检查\",\n  \"description\": \"定期检查API端点健康状态\",\n  \"type\": \"http_request\",\n  \"schedule\": \"0 */5 * * * *\",\n  \"enabled\": true,\n  \"maxRetries\": 3,\n  \"timeout\": 30000,\n  \"tags\": [\"health-check\", \"monitoring\"],\n  \"config\": {\n    \"httpConfig\": {\n      \"url\": \"https://api.example.com/health\",\n      \"method\": \"GET\",\n      \"headers\": {\n        \"User-Agent\": \"Scheduler-Health-Check\"\n      },\n      \"timeout\": 10000,\n      \"expectedStatusCode\": 200\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/jobs",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "jobs"]
+            },
+            "description": "创建HTTP请求类型的作业"
+          },
+          "response": []
+        },
+        {
+          "name": "创建函数调用作业",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"数据处理任务\",\n  \"description\": \"定期处理数据\",\n  \"type\": \"function_call\",\n  \"schedule\": \"0 0 2 * * *\",\n  \"enabled\": true,\n  \"maxRetries\": 2,\n  \"timeout\": 60000,\n  \"tags\": [\"data-processing\", \"batch\"],\n  \"config\": {\n    \"functionConfig\": {\n      \"modulePath\": \"./processors/dataProcessor\",\n      \"functionName\": \"processData\",\n      \"parameters\": {\n        \"batchSize\": 1000,\n        \"source\": \"database\"\n      }\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/jobs",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "jobs"]
+            },
+            "description": "创建函数调用类型的作业"
+          },
+          "response": []
+        },
+        {
+          "name": "创建Shell命令作业",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"备份数据库\",\n  \"description\": \"每日数据库备份\",\n  \"type\": \"shell_command\",\n  \"schedule\": \"0 0 1 * * *\",\n  \"enabled\": true,\n  \"maxRetries\": 1,\n  \"timeout\": 300000,\n  \"tags\": [\"backup\", \"database\"],\n  \"config\": {\n    \"shellConfig\": {\n      \"command\": \"mysqldump\",\n      \"args\": [\"-u\", \"root\", \"-p\", \"mydb\"],\n      \"workingDirectory\": \"/backup\",\n      \"environment\": {\n        \"MYSQL_PWD\": \"password\"\n      }\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/jobs",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "jobs"]
+            },
+            "description": "创建Shell命令类型的作业"
+          },
+          "response": []
+        },
+        {
+          "name": "更新作业",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"更新后的作业描述\",\n  \"enabled\": false,\n  \"maxRetries\": 5,\n  \"timeout\": 45000,\n  \"tags\": [\"updated\", \"monitoring\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/jobs/{{jobId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "jobs", "{{jobId}}"]
+            },
+            "description": "更新现有作业的配置"
+          },
+          "response": []
+        },
+        {
+          "name": "删除作业",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/jobs/{{jobId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "jobs", "{{jobId}}"]
+            },
+            "description": "删除指定的作业"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "作业执行控制",
+      "item": [
+        {
+          "name": "手动执行作业",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"parameters\": {\n    \"force\": true,\n    \"context\": \"manual-execution\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/jobs/{{jobId}}/execute",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "jobs", "{{jobId}}", "execute"]
+            },
+            "description": "立即执行指定的作业"
+          },
+          "response": []
+        },
+        {
+          "name": "暂停作业",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"维护期间暂停\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/jobs/{{jobId}}/pause",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "jobs", "{{jobId}}", "pause"]
+            },
+            "description": "暂停作业的调度执行"
+          },
+          "response": []
+        },
+        {
+          "name": "恢复作业",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"维护完成，恢复执行\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/jobs/{{jobId}}/resume",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "jobs", "{{jobId}}", "resume"]
+            },
+            "description": "恢复已暂停作业的调度执行"
+          },
+          "response": []
+        },
+        {
+          "name": "获取作业执行历史",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/jobs/{{jobId}}/executions?page=1&limit=20&status=completed",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "jobs", "{{jobId}}", "executions"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "页码"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "每页数量"
+                },
+                {
+                  "key": "status",
+                  "value": "completed",
+                  "description": "执行状态过滤",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "获取作业的执行历史记录"
+          },
+          "response": []
+        },
+        {
+          "name": "获取作业下次执行时间",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/jobs/{{jobId}}/next-execution",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "jobs", "{{jobId}}", "next-execution"]
+            },
+            "description": "获取作业的下次执行时间"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "批量操作",
+      "item": [
+        {
+          "name": "批量暂停作业",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jobIds\": [\"job-1\", \"job-2\", \"job-3\"],\n  \"reason\": \"系统维护\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/jobs/batch/pause",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "jobs", "batch", "pause"]
+            },
+            "description": "批量暂停多个作业"
+          },
+          "response": []
+        },
+        {
+          "name": "批量恢复作业",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jobIds\": [\"job-1\", \"job-2\", \"job-3\"],\n  \"reason\": \"维护完成\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/jobs/batch/resume",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "jobs", "batch", "resume"]
+            },
+            "description": "批量恢复多个作业"
+          },
+          "response": []
+        },
+        {
+          "name": "批量删除作业",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jobIds\": [\"job-1\", \"job-2\", \"job-3\"],\n  \"force\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/jobs/batch",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "jobs", "batch"]
+            },
+            "description": "批量删除多个作业"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "测试示例",
+      "item": [
+        {
+          "name": "完整工作流测试",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"测试作业\",\n  \"description\": \"用于测试的示例作业\",\n  \"type\": \"http_request\",\n  \"schedule\": \"0 */1 * * * *\",\n  \"enabled\": true,\n  \"maxRetries\": 2,\n  \"timeout\": 15000,\n  \"tags\": [\"test\", \"example\"],\n  \"config\": {\n    \"httpConfig\": {\n      \"url\": \"https://httpbin.org/get\",\n      \"method\": \"GET\",\n      \"headers\": {\n        \"User-Agent\": \"Scheduler-Test\"\n      },\n      \"timeout\": 10000\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/jobs",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "jobs"]
+            },
+            "description": "创建一个测试作业用于验证API功能"
+          },
+          "response": []
+        },
+        {
+          "name": "错误处理测试",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"\",\n  \"type\": \"invalid_type\",\n  \"schedule\": \"invalid-cron\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/jobs",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "jobs"]
+            },
+            "description": "测试API的错误处理和验证机制"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// 设置请求ID用于追踪",
+          "pm.globals.set('requestId', 'req_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9));",
+          "",
+          "// 设置时间戳",
+          "pm.globals.set('timestamp', new Date().toISOString());"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// 基础响应验证",
+          "pm.test('响应状态码正常', function () {",
+          "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+          "});",
+          "",
+          "pm.test('响应时间合理', function () {",
+          "    pm.expect(pm.response.responseTime).to.be.below(5000);",
+          "});",
+          "",
+          "pm.test('响应格式正确', function () {",
+          "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+          "});",
+          "",
+          "// 响应结构验证",
+          "if (pm.response.code === 200 || pm.response.code === 201) {",
+          "    pm.test('响应结构正确', function () {",
+          "        const jsonData = pm.response.json();",
+          "        pm.expect(jsonData).to.have.property('success');",
+          "        pm.expect(jsonData).to.have.property('timestamp');",
+          "        pm.expect(jsonData).to.have.property('requestId');",
+          "        ",
+          "        if (jsonData.success) {",
+          "            pm.expect(jsonData).to.have.property('data');",
+          "        } else {",
+          "            pm.expect(jsonData).to.have.property('error');",
+          "        }",
+          "    });",
+          "}",
+          "",
+          "// 自动设置作业ID变量",
+          "if (pm.response.code === 201 && pm.request.url.path.includes('jobs')) {",
+          "    const jsonData = pm.response.json();",
+          "    if (jsonData.success && jsonData.data && jsonData.data.id) {",
+          "        pm.collectionVariables.set('jobId', jsonData.data.id);",
+          "        console.log('设置作业ID:', jsonData.data.id);",
+          "    }",
+          "}"
+        ]
+      }
+    }
+  ]
+}

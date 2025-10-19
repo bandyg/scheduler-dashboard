@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>前端状态调试</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: blue; }
+        pre { background: #f5f5f5; padding: 10px; border-radius: 3px; overflow-x: auto; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>前端状态调试工具</h1>
+    
+    <div class="section">
+        <h2>1. API 直接测试</h2>
+        <button onclick="testHealthAPI()">测试健康状态 API</button>
+        <button onclick="testStatsAPI()">测试统计 API</button>
+        <button onclick="testSchedulerAPI()">测试调度器 API</button>
+        <div id="api-results"></div>
+    </div>
+
+    <div class="section">
+        <h2>2. 前端页面状态检查</h2>
+        <button onclick="checkPageState()">检查页面状态</button>
+        <div id="page-state"></div>
+    </div>
+
+    <div class="section">
+        <h2>3. React Query 状态</h2>
+        <button onclick="checkReactQuery()">检查 React Query 缓存</button>
+        <div id="react-query-state"></div>
+    </div>
+
+    <script>
+        async function testHealthAPI() {
+            const resultsDiv = document.getElementById('api-results');
+            resultsDiv.innerHTML = '<p class="info">正在测试健康状态 API...</p>';
+            
+            try {
+                const response = await fetch('/api/proxy/system/health');
+                const data = await response.json();
+                
+                resultsDiv.innerHTML = `
+                    <h3 class="success">健康状态 API 测试成功</h3>
+                    <p><strong>状态码:</strong> ${response.status}</p>
+                    <p><strong>原始数据:</strong></p>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                    <p><strong>处理后的状态:</strong> ${data.data?.data?.status || data.data?.status || data.status}</p>
+                `;
+            } catch (error) {
+                resultsDiv.innerHTML = `<p class="error">健康状态 API 测试失败: ${error.message}</p>`;
+            }
+        }
+
+        async function testStatsAPI() {
+            const resultsDiv = document.getElementById('api-results');
+            resultsDiv.innerHTML = '<p class="info">正在测试统计 API...</p>';
+            
+            try {
+                const response = await fetch('/api/proxy/system/stats');
+                const data = await response.json();
+                
+                resultsDiv.innerHTML = `
+                    <h3 class="success">统计 API 测试成功</h3>
+                    <p><strong>状态码:</strong> ${response.status}</p>
+                    <p><strong>数据:</strong></p>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } catch (error) {
+                resultsDiv.innerHTML = `<p class="error">统计 API 测试失败: ${error.message}</p>`;
+            }
+        }
+
+        async function testSchedulerAPI() {
+            const resultsDiv = document.getElementById('api-results');
+            resultsDiv.innerHTML = '<p class="info">正在测试调度器 API...</p>';
+            
+            try {
+                const response = await fetch('/api/proxy/system/status');
+                const data = await response.json();
+                
+                resultsDiv.innerHTML = `
+                    <h3 class="success">调度器 API 测试成功</h3>
+                    <p><strong>状态码:</strong> ${response.status}</p>
+                    <p><strong>数据:</strong></p>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } catch (error) {
+                resultsDiv.innerHTML = `<p class="error">调度器 API 测试失败: ${error.message}</p>`;
+            }
+        }
+
+        function checkPageState() {
+            const stateDiv = document.getElementById('page-state');
+            
+            // 尝试访问主页面的 window 对象
+            try {
+                const mainWindow = window.parent;
+                if (mainWindow && mainWindow !== window) {
+                    stateDiv.innerHTML = `
+                        <p class="info">检测到父窗口，尝试访问页面状态...</p>
+                        <p>请在主页面的控制台中运行以下命令来检查状态：</p>
+                        <pre>
+// 检查健康状态数据
+console.log('Health data:', window.healthData);
+
+// 检查 React Query 状态（如果可访问）
+if (window.queryClient) {
+    console.log('Query cache:', window.queryClient.getQueryCache().getAll());
+}
+
+// 检查页面元素
+const healthElement = document.querySelector('[data-testid="health-status"]') || 
+                     document.querySelector('span:contains("正常")') ||
+                     document.querySelector('span:contains("异常")');
+console.log('Health element:', healthElement);
+if (healthElement) {
+    console.log('Health element text:', healthElement.textContent);
+}
+                        </pre>
+                    `;
+                } else {
+                    stateDiv.innerHTML = '<p class="error">无法访问主页面状态</p>';
+                }
+            } catch (error) {
+                stateDiv.innerHTML = `<p class="error">检查页面状态失败: ${error.message}</p>`;
+            }
+        }
+
+        function checkReactQuery() {
+            const queryDiv = document.getElementById('react-query-state');
+            queryDiv.innerHTML = `
+                <p class="info">请在主页面控制台运行以下命令：</p>
+                <pre>
+// 检查 React Query 缓存
+if (window.__REACT_QUERY_DEVTOOLS_GLOBAL_HOOK__) {
+    console.log('React Query DevTools available');
+}
+
+// 检查查询状态
+console.log('Current queries:', window.queryClient?.getQueryCache().getAll());
+
+// 检查特定查询
+const healthQuery = window.queryClient?.getQueryCache().find(['health']);
+console.log('Health query:', healthQuery);
+
+const statsQuery = window.queryClient?.getQueryCache().find(['stats']);
+console.log('Stats query:', statsQuery);
+
+const schedulerQuery = window.queryClient?.getQueryCache().find(['scheduler-status']);
+console.log('Scheduler query:', schedulerQuery);
+                </pre>
+            `;
+        }
+
+        // 自动运行 API 测试
+        window.onload = function() {
+            testHealthAPI();
+        };
+    </script>
+</body>
+</html>
