@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const SCHEDULER_API_BASE = 'http://localhost:3002/api/v1';
+const SCHEDULER_API_BASE = process.env.BACKEND_API_BASE || 'http://localhost:8010/api/v1';
 
 // API Key 验证函数
 function validateApiKey(request: NextRequest, path: string): NextResponse | null {
