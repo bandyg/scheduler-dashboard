@@ -33,7 +33,7 @@ export default function NewJobPage() {
   const { data: schedulerData, isLoading: schedulerLoading, error: schedulerError } = useQuery({
     queryKey: ['scheduler-status'],
     queryFn: getSchedulerStatus,
-    refetchInterval: 5000, // 每5秒刷新一次状态
+    refetchInterval: 30000, // 每30秒刷新一次状态
   });
 
   const {

@@ -1,28 +1,34 @@
 "use client";
 
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
 import { getJob, getJobExecutions, deleteJob, executeJob, pauseJob, resumeJob, getJobNextExecution, getSchedulerStatus } from '@/lib/api';
 import { createErrorHandler, toast } from '@/lib/error-handler';
 import Link from 'next/link';
 
 export default function JobDetailPage() {
   const params = useParams<{ id: string }>();
+  const router = useRouter();
   const jobId = params?.id as string;
   const qc = useQueryClient();
+  const [deleteConfirm, setDeleteConfirm] = useState<{
+    isOpen: boolean;
+    jobName: string;
+  }>({ isOpen: false, jobName: "" });
 
   // 获取调度器状态
   const { data: schedulerData, isLoading: schedulerLoading, error: schedulerError } = useQuery({
     queryKey: ['scheduler-status'],
     queryFn: getSchedulerStatus,
-    refetchInterval: 5000, // 每5秒刷新一次状态
+    refetchInterval: 30000, // 每30秒刷新一次状态
   });
 
   const { data: jobRes } = useQuery({ 
     queryKey: ['job', jobId], 
     queryFn: () => getJob(jobId), 
     enabled: !!jobId,
-    refetchInterval: 5000 // 每5秒刷新作业详情
+    refetchInterval: 30000 // 每30秒刷新作业详情
   });
   const rawJob = (jobRes as any)?.data?.data; // 修复：访问双层嵌套的数据结构
   
@@ -51,9 +57,9 @@ export default function JobDetailPage() {
   const getStatusLabel = (s?: string) => (s ? (statusLabelMap[s] ?? s) : '未知');
   const getTypeLabel = (t?: string) => (t ? (typeLabelMap[t] ?? t) : '未知');
 
-  const { data: executionsRes } = useQuery({ queryKey: ['executions', jobId], queryFn: () => getJobExecutions(jobId, { page: 1, limit: 20 }), enabled: !!jobId, refetchInterval: 5000 });
+  const { data: executionsRes } = useQuery({ queryKey: ['executions', jobId], queryFn: () => getJobExecutions(jobId, { page: 1, limit: 20 }), enabled: !!jobId, refetchInterval: 30000 });
   const executions = Array.isArray(executionsRes?.data) ? (executionsRes?.data as any) : (executionsRes?.data as any)?.executions ?? [];
-  const { data: nextExec } = useQuery({ queryKey: ['next-exec', jobId], queryFn: () => getJobNextExecution(jobId), enabled: !!jobId, refetchInterval: 15000 });
+  const { data: nextExec } = useQuery({ queryKey: ['next-exec', jobId], queryFn: () => getJobNextExecution(jobId), enabled: !!jobId, refetchInterval: 60000 });
 
   // 计算下次执行时间显示（需在nextExec声明之后）
   const rawNext = (nextExec as any)?.data?.data?.nextExecuteAt ?? (nextExec as any)?.data?.nextExecuteAt ?? job?.nextExecuteAt ?? null;
@@ -86,7 +92,32 @@ export default function JobDetailPage() {
     console.log('Job Detail Debug - Enabled value:', job.enabled, 'Type:', typeof job.enabled);
   }
   
-  const del = useMutation({ mutationFn: () => deleteJob(jobId), onSuccess: () => window.history.back() });
+  const del = useMutation({ 
+    mutationFn: () => deleteJob(jobId), 
+    onSuccess: () => {
+      toast.success('作业删除成功');
+      setDeleteConfirm({ isOpen: false, jobName: "" });
+      router.push('/jobs');
+    },
+    onError: createErrorHandler("删除作业"),
+  });
+
+  const handleDeleteClick = () => {
+    if (job?.name) {
+      setDeleteConfirm({
+        isOpen: true,
+        jobName: job.name,
+      });
+    }
+  };
+
+  const handleDeleteConfirm = () => {
+    del.mutate();
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteConfirm({ isOpen: false, jobName: "" });
+  };
   
   const exec = useMutation({ 
     mutationFn: () => {
@@ -212,7 +243,7 @@ export default function JobDetailPage() {
                   {resume.isPending ? '恢复中...' : '恢复'}
                 </button>
               )}
-              <button onClick={() => del.mutate()} className="px-3 py-2 rounded bg-red-600 text-white text-sm hover:bg-red-700">删除</button>
+              <button onClick={handleDeleteClick} className="px-3 py-2 rounded bg-red-600 text-white text-sm hover:bg-red-700">删除</button>
               <Link href={`/jobs/${jobId}/edit`} className="px-3 py-2 rounded bg-indigo-600 text-white text-sm hover:bg-indigo-700">编辑</Link>
             </div>
           </div>
@@ -303,6 +334,79 @@ export default function JobDetailPage() {
           </table>
         </div>
       </section>
+
+      {/* 删除确认对话框 */}
+      {deleteConfirm.isOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 shadow-xl">
+            <div className="flex items-center mb-4">
+              <div className="flex-shrink-0 w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                <svg
+                  className="w-6 h-6 text-red-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
+                  />
+                </svg>
+              </div>
+              <div className="ml-4">
+                <h3 className="text-lg font-medium text-gray-900">
+                  确认删除作业
+                </h3>
+              </div>
+            </div>
+            <div className="mb-6">
+              <p className="text-sm text-gray-500">
+                您确定要删除作业 <span className="font-medium text-gray-900">"{deleteConfirm.jobName}"</span> 吗？
+              </p>
+              <p className="text-sm text-gray-500 mt-2">
+                此操作无法撤销，作业的所有相关数据都将被永久删除。
+              </p>
+            </div>
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={handleDeleteCancel}
+                disabled={del.isPending}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                取消
+              </button>
+              <button
+                onClick={handleDeleteConfirm}
+                disabled={del.isPending}
+                className="px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+              >
+                {del.isPending ? (
+                  <>
+                    <svg
+                      className="w-4 h-4 mr-2 animate-spin"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                      />
+                    </svg>
+                    删除中...
+                  </>
+                ) : (
+                  "确认删除"
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

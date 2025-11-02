@@ -52,7 +52,7 @@ export default function EditJobPage() {
   } = useQuery({
     queryKey: ['scheduler-status'],
     queryFn: getSchedulerStatus,
-    refetchInterval: 5000, // 每5秒刷新一次
+    refetchInterval: 30000, // 每30秒刷新一次
   });
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm<FormValues>({
