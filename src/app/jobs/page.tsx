@@ -919,7 +919,7 @@ export default function JobsPage() {
             </div>
             <div className="mb-6">
               <p className="text-sm text-gray-500">
-                您确定要删除作业 <span className="font-medium text-gray-900">"{deleteConfirm.jobName}"</span> 吗？
+                您确定要删除作业 <span className="font-medium text-gray-900">&ldquo;{deleteConfirm.jobName}&rdquo;</span> 吗？
               </p>
               <p className="text-sm text-gray-500 mt-2">
                 此操作无法撤销，作业的所有相关数据都将被永久删除。
