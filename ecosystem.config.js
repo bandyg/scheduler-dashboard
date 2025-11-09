@@ -11,26 +11,26 @@ module.exports = {
       max_memory_restart: '1G',
       env: {
         NODE_ENV: 'production',
-        PORT: 3000,
-        BACKEND_API_BASE: 'http://localhost:8010/api/v1',
+        PORT: 8011,
+        BACKEND_API_BASE: 'http://192.168.1.11:8010/api/v1',
         API_KEY: 'scheduler-api-key-2025'
       },
       env_production: {
         NODE_ENV: 'production',
-        PORT: 3000,
-        BACKEND_API_BASE: 'http://localhost:8010/api/v1',
+        PORT: 8011,
+        BACKEND_API_BASE: 'http://192.168.1.11:8010/api/v1',
         API_KEY: 'scheduler-api-key-2025'
       },
       env_staging: {
         NODE_ENV: 'production',
-        PORT: 3001,
-        BACKEND_API_BASE: 'http://localhost:8010/api/v1',
+        PORT: 8011,
+        BACKEND_API_BASE: 'http://192.168.1.11:8010/api/v1',
         API_KEY: 'scheduler-api-key-2025'
       },
       env_development: {
         NODE_ENV: 'development',
-        PORT: 3001,
-        BACKEND_API_BASE: 'http://localhost:8010/api/v1',
+        PORT: 8011,
+        BACKEND_API_BASE: 'http://192.168.1.11:8010/api/v1',
         API_KEY: 'scheduler-api-key-2025'
       },
       // 日志配置
@@ -43,7 +43,7 @@ module.exports = {
       max_restarts: 10,
       // 集群模式（可选）
       // instances: 'max', // 使用所有CPU核心
-      // exec_mode: 'cluster'
+      exec_mode: 'fork'
     }
   ]
 };
