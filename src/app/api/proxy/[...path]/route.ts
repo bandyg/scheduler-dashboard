@@ -39,15 +39,22 @@ function validateApiKey(request: NextRequest, path: string): NextResponse | null
 }
 
 // 创建带有 API Key 的请求头
-function createHeaders(apiKey?: string) {
+function createHeaders(apiKey: string | undefined, request: NextRequest, path: string) {
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
   };
-  
-  if (apiKey) {
+
+  // 透传部分安全可控的请求头以保持兼容性
+  const authHeader = request.headers.get('Authorization');
+  const xRequestedWith = request.headers.get('X-Requested-With');
+  if (authHeader) headers['Authorization'] = authHeader;
+  if (xRequestedWith) headers['X-Requested-With'] = xRequestedWith;
+
+  // 后端鉴权仅在非健康检查时附加真实 API Key
+  if (apiKey && path !== 'system/health') {
     headers['X-API-Key'] = apiKey;
   }
-  
+
   return headers;
 }
 
@@ -65,12 +72,18 @@ async function proxyRequest(
       return validationError;
     }
 
-    const url = `${SCHEDULER_API_BASE}/${path}`;
+    // 拼接查询参数，确保分页/筛选等功能正常
+    const base = `${SCHEDULER_API_BASE}/${path}`;
+    const targetUrl = new URL(base);
+    const search = request.nextUrl.search;
+    if (search) {
+      targetUrl.search = search;
+    }
     const apiKey = process.env.API_KEY;
     
-    const response = await fetch(url, {
+    const response = await fetch(targetUrl.toString(), {
       method,
-      headers: createHeaders(path !== 'system/health' ? apiKey : undefined),
+      headers: createHeaders(apiKey, request, path),
       body: body || undefined,
     });
 
@@ -90,15 +103,15 @@ async function proxyRequest(
     // 检查是否是连接错误（后端服务器未运行）
     if (error instanceof TypeError && error.message.includes('fetch')) {
       return NextResponse.json(
-        { 
-          success: false, 
+        {
+          success: false,
           error: {
             code: 'BACKEND_UNAVAILABLE',
-            message: 'Backend service is not available. Please ensure the scheduler service is running on port 3002.'
+            message: 'Backend service is not available. Please ensure the scheduler service is running on port 8010.'
           },
           timestamp: new Date().toISOString()
         },
-        { 
+        {
           status: 503,
           headers: {
             'Access-Control-Allow-Origin': '*',

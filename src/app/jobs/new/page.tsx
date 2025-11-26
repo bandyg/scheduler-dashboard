@@ -28,6 +28,7 @@ export default function NewJobPage() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [showHelp, setShowHelp] = useState<string | null>(null);
+  const [lastSubmitAt, setLastSubmitAt] = useState<number>(0);
 
   // 获取调度器状态
   const { data: schedulerData, isLoading: schedulerLoading, error: schedulerError } = useQuery({
@@ -62,6 +63,14 @@ export default function NewJobPage() {
       if (!schedulerData?.isRunning) {
         throw new Error('调度器未启动，无法创建作业。请先启动调度器。');
       }
+      // 前端去重：使用 localStorage 记录短时间内已创建的作业名称
+      const key = `created-job:${payload.name.toLowerCase()}`;
+      const prev = localStorage.getItem(key);
+      const now = Date.now();
+      if (prev && now - Number(prev) < 5000) {
+        throw new Error('短时间内重复创建同名作业，已阻止');
+      }
+      localStorage.setItem(key, String(now));
       return createJob(payload);
     },
     onSuccess: () => {
@@ -121,12 +130,20 @@ export default function NewJobPage() {
   const onSubmit: SubmitHandler<FormValues> = (values) => {
     // 清除之前的错误
     setError(null);
-    
+
     // 再次检查调度器状态
     if (!schedulerData?.isRunning) {
       toast.error('调度器未启动，无法创建作业。请先到主页启动调度器。');
       return;
     }
+
+    // 前端防抖：避免快速重复点击提交
+    const now = Date.now();
+    if (now - lastSubmitAt < 1500) {
+      toast.warning('提交过于频繁，请稍后再试');
+      return;
+    }
+    setLastSubmitAt(now);
 
     try {
       // 验证和清理配置

@@ -1,0 +1,16 @@
+{
+  "url": "http://funfin.space:3005/v1/workflows/1e04ce52-0d27-4a8b-8257-92411d67cd3e/run",
+  "method": "POST",
+  "headers": {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer app-6AhGsReHxB0gBo5AM20rlvyw"
+  },
+  "body": {
+    "inputs": {
+      "question": "香港六合彩最新一期开奖结果"
+    },
+    "response_mode": "streaming",
+    "user": "jobs"
+  },
+  "timeout": 60000
+}

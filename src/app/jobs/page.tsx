@@ -121,17 +121,17 @@ export default function JobsPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "running":
-        return "bg-success text-success";
+        return "bg-success/20 text-success";
       case "paused":
-        return "bg-warning text-warning";
+        return "bg-warning/20 text-warning";
       case "completed":
-        return "bg-success text-success";
+        return "bg-success/20 text-success";
       case "failed":
-        return "bg-error text-error";
+        return "bg-error/20 text-error";
       case "pending":
-        return "bg-warning text-warning";
+        return "bg-warning/20 text-warning";
       default:
-        return "bg-muted text-muted-foreground";
+        return "bg-muted/20 text-muted-foreground";
     }
   };
 
@@ -585,9 +585,7 @@ export default function JobsPage() {
                       </td>
                       <td className="px-6 py-4">
                         <span
-                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
-                            job.status
-                          )}/20 ${getStatusColor(job.status).split(" ")[1]}`}
+                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(job.status)}`}
                         >
                           {getStatusIcon(job.status)}
                           <span className="ml-1.5">{job.status}</span>

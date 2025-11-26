@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Providers from "./providers";
 import Link from 'next/link';
+import { UserNav } from '@/components/user-nav';
+import { isAuthenticated } from '@/lib/auth-api';
 
 export const metadata: Metadata = {
   title: "Scheduler Dashboard",
@@ -13,6 +15,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const isLoggedIn = isAuthenticated();
+  
   return (
     <html lang="en">
       <body className="antialiased">
@@ -23,7 +27,10 @@ export default function RootLayout({
               <nav className="flex items-center gap-4 text-sm">
                 <Link href="/" className="hover:text-blue-600">概览</Link>
                 <Link href="/jobs" className="hover:text-blue-600">作业管理</Link>
-                <Link href="/logs" className="hover:text-blue-600">操作日志</Link>
+                {isLoggedIn && <UserNav />}
+                {!isLoggedIn && (
+                  <Link href="/login" className="hover:text-blue-600">登录</Link>
+                )}
               </nav>
             </div>
           </header>

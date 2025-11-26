@@ -335,7 +335,7 @@ export default function Home() {
               {statsError && <div>• 统计数据服务连接失败</div>}
               {schedulerError && <div>• 调度器状态服务连接失败</div>}
               <div className="mt-2 text-xs opacity-80">
-                请检查API服务器是否正在运行 (端口3002)
+                请检查API服务器是否正在运行 (端口8010)
               </div>
             </div>
           </div>
