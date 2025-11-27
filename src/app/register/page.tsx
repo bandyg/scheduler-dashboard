@@ -118,16 +118,16 @@ export default function RegisterPage() {
               <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 用户名 <span className="text-red-500">*</span>
               </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <User className="h-5 w-5 text-gray-400" />
+              <div className="input-wrap">
+                <div className="input-icon-left">
+                  <User className="h-5 w-5" />
                 </div>
                 <input
                   {...formRegister('username')}
                   type="text"
                   id="username"
                   className={clsx(
-                    'form-input pl-10',
+                    'form-input input-with-left',
                     errors.username ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-gray-300 dark:border-gray-600'
                   )}
                   placeholder="请输入用户名（邮箱或手机号）"
@@ -149,16 +149,16 @@ export default function RegisterPage() {
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   邮箱
                 </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Mail className="h-5 w-5 text-gray-400" />
+                <div className="input-wrap">
+                  <div className="input-icon-left">
+                    <Mail className="h-5 w-5" />
                   </div>
                   <input
                     {...formRegister('email')}
                     type="email"
                     id="email"
                     className={clsx(
-                      'form-input pl-10',
+                      'form-input input-with-left',
                       errors.email ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-gray-300 dark:border-gray-600'
                     )}
                     placeholder="请输入邮箱地址"
@@ -178,16 +178,16 @@ export default function RegisterPage() {
                 <label htmlFor="phone" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   手机号
                 </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Phone className="h-5 w-5 text-gray-400" />
+                <div className="input-wrap">
+                  <div className="input-icon-left">
+                    <Phone className="h-5 w-5" />
                   </div>
                   <input
                     {...formRegister('phone')}
                     type="tel"
                     id="phone"
                     className={clsx(
-                      'form-input pl-10',
+                      'form-input input-with-left',
                       errors.phone ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-gray-300 dark:border-gray-600'
                     )}
                     placeholder="请输入手机号"
@@ -209,16 +209,16 @@ export default function RegisterPage() {
               <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 姓名
               </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <User className="h-5 w-5 text-gray-400" />
+              <div className="input-wrap">
+                <div className="input-icon-left">
+                  <User className="h-5 w-5" />
                 </div>
                 <input
                   {...formRegister('name')}
                   type="text"
                   id="name"
                   className={clsx(
-                    'form-input pl-10',
+                    'form-input input-with-left',
                     errors.name ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-gray-300 dark:border-gray-600'
                   )}
                   placeholder="请输入您的姓名（可选）"
@@ -239,16 +239,16 @@ export default function RegisterPage() {
               <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 密码 <span className="text-red-500">*</span>
               </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-400" />
+              <div className="input-wrap">
+                <div className="input-icon-left">
+                  <Lock className="h-5 w-5" />
                 </div>
                 <input
                   {...formRegister('password')}
                   type={showPassword ? 'text' : 'password'}
                   id="password"
                   className={clsx(
-                    'form-input pl-10 pr-12',
+                    'form-input input-with-left input-with-right',
                     errors.password ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-gray-300 dark:border-gray-600'
                   )}
                   placeholder="请输入密码"
@@ -257,7 +257,7 @@ export default function RegisterPage() {
                 />
                 <button
                   type="button"
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                  className="input-icon-right icon-button text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                   onClick={() => setShowPassword(!showPassword)}
                   disabled={isLoading}
                 >
@@ -303,16 +303,16 @@ export default function RegisterPage() {
               <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 确认密码 <span className="text-red-500">*</span>
               </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-400" />
+              <div className="input-wrap">
+                <div className="input-icon-left">
+                  <Lock className="h-5 w-5" />
                 </div>
                 <input
                   {...formRegister('confirmPassword')}
                   type={showConfirmPassword ? 'text' : 'password'}
                   id="confirmPassword"
                   className={clsx(
-                    'form-input pl-10 pr-12',
+                    'form-input input-with-left input-with-right',
                     errors.confirmPassword ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-gray-300 dark:border-gray-600'
                   )}
                   placeholder="请再次输入密码"
@@ -321,7 +321,7 @@ export default function RegisterPage() {
                 />
                 <button
                   type="button"
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                  className="input-icon-right icon-button text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   disabled={isLoading}
                 >

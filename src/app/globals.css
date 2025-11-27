@@ -163,6 +163,25 @@ body {
   color: var(--foreground);
 }
 
+/* 输入框图标布局：防止文字与图标重叠 */
+.input-wrap { position: relative; }
+.input-icon-left { position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); width: 1.25rem; height: 1.25rem; pointer-events: none; color: #9ca3af; z-index: 2; }
+.input-icon-right { position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%); width: 1.5rem; height: 1.5rem; display: inline-flex; align-items: center; justify-content: center; z-index: 2; }
+.icon-button { background: none; border: 0; padding: 0; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+.input-with-left { padding-left: 2.75rem; } /* 44px 左侧预留 */
+.input-with-right { padding-right: 3rem; }  /* 48px 右侧预留 */
+
+.input-wrap .form-input { position: relative; z-index: 1; }
+
+.input-wrap:focus-within .input-icon-left,
+.input-wrap:focus-within .input-icon-right { opacity: 1; visibility: visible; }
+
+.form-input:disabled {
+  background: #f5f7fa;
+  color: #909399;
+  opacity: 1;
+}
+
 .form-input:focus {
   outline: none;
   border-color: var(--primary);

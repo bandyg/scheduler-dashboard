@@ -74,6 +74,9 @@ export async function login(credentials: LoginCredentials): Promise<LoginRespons
       
       // 设置API默认请求头
       authApi.defaults.headers.common['Authorization'] = `Bearer ${data.data.token}`;
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('auth-changed'));
+      }
     }
     
     return data;
@@ -187,6 +190,9 @@ export async function logout(): Promise<void> {
     
     // 清除API请求头
     delete authApi.defaults.headers.common['Authorization'];
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new Event('auth-changed'));
+    }
   }
 }
 

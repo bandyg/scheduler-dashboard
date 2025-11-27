@@ -135,16 +135,16 @@ export default function LoginPage() {
               <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 用户名
               </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <User className="h-5 w-5 text-gray-400" />
+              <div className="input-wrap">
+                <div className="input-icon-left">
+                  <User className="h-5 w-5" />
                 </div>
                 <input
                   {...register('username')}
                   type="text"
                   id="username"
                   className={clsx(
-                    'form-input pl-10',
+                    'form-input input-with-left',
                     errors.username ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-gray-300 dark:border-gray-600'
                   )}
                   placeholder={getUsernamePlaceholder()}
@@ -165,16 +165,16 @@ export default function LoginPage() {
               <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 密码
               </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-400" />
+              <div className="input-wrap">
+                <div className="input-icon-left">
+                  <Lock className="h-5 w-5" />
                 </div>
                 <input
                   {...register('password')}
                   type={showPassword ? 'text' : 'password'}
                   id="password"
                   className={clsx(
-                    'form-input pl-10 pr-12',
+                    'form-input input-with-left input-with-right',
                     errors.password ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-gray-300 dark:border-gray-600'
                   )}
                   placeholder="请输入密码"
@@ -183,7 +183,7 @@ export default function LoginPage() {
                 />
                 <button
                   type="button"
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                  className="input-icon-right icon-button text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                   onClick={() => setShowPassword(!showPassword)}
                   disabled={isLoading}
                 >

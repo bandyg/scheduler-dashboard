@@ -1,6 +1,8 @@
 "use client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { isAuthenticated } from "@/lib/auth-api";
 import {
   getHealth,
   getStats,
@@ -13,6 +15,7 @@ import { createErrorHandler, toast } from "@/lib/error-handler";
 
 export default function Home() {
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   // 本地状态管理，用于乐观更新
   const [optimisticSchedulerState, setOptimisticSchedulerState] = useState<
@@ -26,6 +29,12 @@ export default function Home() {
   useEffect(() => {
     setIsClient(true);
   }, []);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && !isAuthenticated()) {
+      router.replace('/login');
+    }
+  }, [router]);
 
   // 使用React Query获取数据
   const {

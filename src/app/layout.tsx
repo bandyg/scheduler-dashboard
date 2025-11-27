@@ -4,6 +4,7 @@ import Providers from "./providers";
 import Link from 'next/link';
 import { UserNav } from '@/components/user-nav';
 import { isAuthenticated } from '@/lib/auth-api';
+import { HeaderNav } from '@/components/header-nav';
 
 export const metadata: Metadata = {
   title: "Scheduler Dashboard",
@@ -24,14 +25,7 @@ export default function RootLayout({
           <header className="border-b">
             <div className="mx-auto max-w-6xl px-4 h-14 flex items-center justify-between">
               <div className="font-semibold">Scheduler Dashboard</div>
-              <nav className="flex items-center gap-4 text-sm">
-                <Link href="/" className="hover:text-blue-600">概览</Link>
-                <Link href="/jobs" className="hover:text-blue-600">作业管理</Link>
-                {isLoggedIn && <UserNav />}
-                {!isLoggedIn && (
-                  <Link href="/login" className="hover:text-blue-600">登录</Link>
-                )}
-              </nav>
+              <HeaderNav />
             </div>
           </header>
           <main className="mx-auto max-w-7xl px-4 py-6">

@@ -1,7 +1,9 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { isAuthenticated } from "@/lib/auth-api";
 import {
   getJobs,
   deleteJob,
@@ -16,11 +18,18 @@ import Link from "next/link";
 
 export default function JobsPage() {
   const qc = useQueryClient();
+  const router = useRouter();
   const [deleteConfirm, setDeleteConfirm] = useState<{
     isOpen: boolean;
     jobId: string;
     jobName: string;
   }>({ isOpen: false, jobId: "", jobName: "" });
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && !isAuthenticated()) {
+      router.replace('/login');
+    }
+  }, [router]);
 
   // 获取调度器状态
   const { data: schedulerData, isLoading: schedulerLoading } = useQuery({
